@@ -8,13 +8,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +27,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +47,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,38 +72,17 @@ class MainActivity : ComponentActivity() {
 )
 @Composable
 fun LemonadeApp() {
-    TopAppBar()
     LemonadeWithTextAndImage(modifier = Modifier
         .fillMaxSize()
         .wrapContentSize(Alignment.Center)
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar() {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Yellow,
-                    titleContentColor = Color.Black
-                ),
-                title = {
-                    Text(text = "Lemonade")
-                }
-            )
-        }
-    ) {
-        //ignore
-    }
-}
-
-@Composable
 fun LemonadeWithTextAndImage(modifier: Modifier = Modifier) {
-    var result by remember {
-        mutableIntStateOf(1)
-    }
+    var result by remember { mutableStateOf(1) }
+    var currentClick by remember { mutableStateOf(1) }
+    var randomClicks by remember { mutableStateOf((2..5).random())}
 
     val imageResource = when(result){
         1 -> R.drawable.lemon_tree
@@ -111,6 +97,21 @@ fun LemonadeWithTextAndImage(modifier: Modifier = Modifier) {
         3 -> R.string.instruction3
         else -> R.string.instruction4
     }
+
+    TopAppBar(
+        title = {
+            Text(
+                text = "Lemonade",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .width(365.dp)
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFf5dc07)
+        )
+    )
 
     Column(
         modifier = modifier,
@@ -131,11 +132,18 @@ fun LemonadeWithTextAndImage(modifier: Modifier = Modifier) {
                 )
                 .clickable(
                     onClick = {
-                        when (result) {
-                            2 -> result = randomClick()
-                            4 -> result = 1
-                            else -> result++
+                        if (currentClick <= randomClicks + 1) {
+                            result = 2
+                        } else if (currentClick <= randomClicks + 2) {
+                            result = 3
+                        } else if (currentClick <= randomClicks + 3) {
+                            result = 4
+                        } else if (currentClick <= randomClicks + 4) {
+                            currentClick = 1
+                            result = 1
+                            randomClicks = (2..5).random()
                         }
+                        currentClick++
                     }
                 )
         )
@@ -147,16 +155,4 @@ fun LemonadeWithTextAndImage(modifier: Modifier = Modifier) {
             fontSize = 18.sp
         )
     }
-}
-
-fun randomClick(): Int {
-
-    val image = R.drawable.lemon_squeeze
-
-//    var randomClick = (3..8).random()
-//    if (numberClick < randomClick) {
-//
-//    } else {
-        return 3
-//    }
 }

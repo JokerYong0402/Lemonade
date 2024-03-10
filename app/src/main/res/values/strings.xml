@@ -8,4 +8,5 @@
     <string name="lemon">Lemon</string>
     <string name="lemonade_glass">Glass of lemonade</string>
     <string name="empty_glass">Empty glass</string>
+    <string name="top_bar_title">Lemonade</string>
 </resources>

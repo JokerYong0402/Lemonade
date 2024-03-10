@@ -101,7 +101,7 @@ fun LemonadeWithTextAndImage(modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             Text(
-                text = "Lemonade",
+                text = stringResource(R.string.top_bar_title),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
